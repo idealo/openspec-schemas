@@ -1,0 +1,218 @@
+name: ml-research
+version: 1
+description: >
+  Iterative machine-learning experiment workflow that connects
+  previous findings, hypotheses, implementation variants,
+  evaluation and experimental results.
+
+artifacts:
+
+  - id: proposal
+    generates: proposal.md
+    description: >
+      Research motivation, previous findings, hypothesis and
+      the ML variant that should be investigated.
+    template: proposal.md
+    instruction: |
+      Describe WHY this experiment is being performed.
+
+      If needed connect the experiment to findings from previous
+      experiments or archived OpenSpec changes whenever they exist.
+
+      Clearly distinguish:
+      - previous evidence
+      - hypothesis
+      - proposed change
+      - expected outcome
+
+      Do not present hypotheses as established facts.
+    requires: []
+
+  - id: design
+    generates: design.md
+    description: >
+      Technical and experimental design of the ML variant.
+    template: design.md
+    instruction: |
+      If a baseline exists, describe exactly how the proposed ML variant differs from
+      the current baseline other wise explain the approach
+
+      Specify:
+      - baseline
+      - implementation variant
+      - changed variables
+      - controlled variables
+      - model
+      - datasets
+      - data splits
+      - training setup
+      - seeds
+      - relevant hyperparameters
+      - reproducibility requirements
+
+      Prefer experiments that isolate one research question.
+    requires:
+      - proposal
+
+  - id: evaluation
+    generates: evaluation.md
+    description: >
+      Evaluation plan, metrics and success criteria for the experiment.
+    template: evaluation.md
+    instruction: |
+      Define how the experiment will be evaluated before running it.
+
+      Include:
+      - primary metric
+      - secondary metrics
+      - baseline comparison
+      - important slices or subgroups
+      - required ablations
+      - success criteria
+      - conditions that would falsify the hypothesis
+
+      The evaluation should make it possible to distinguish
+      improvement from noise or unrelated implementation changes.
+    requires:
+      - proposal
+      - design
+
+  - id: tasks
+    generates: tasks.md
+    description: >
+      Implementation, training, evaluation and documentation checklist.
+    template: tasks.md
+    instruction: |
+      Turn the experiment design into concrete executable tasks. List the python script calles
+      that are used to run the experiments and the different runs with all parameters included
+
+      The tasks must cover:
+      1. implementation
+      2. tests
+      3. experiment execution
+      4. evaluation
+      5. creation of results.md
+      6. distilling the durable finding into the knowledge base
+         (specs/<capability-path>/spec.md) — unless the experiment
+         establishes nothing durable and the change opts out via
+         skip_specs: true
+
+      The final tasks must document:
+      - measured results
+      - observations
+      - interpretation
+      - whether the hypothesis was supported
+      - the decision resulting from the experiment
+      - possible next experiments
+    requires:
+      - design
+      - evaluation
+
+  - id: specs
+    generates: "specs/**/*.md"
+    description: >
+      Durable, validated knowledge distilled from the experiment —
+      the findings and design decisions that survived the evidence,
+      not the hypothesis.
+    template: spec.md
+    instruction: |
+      Capture what the experiment established as durable knowledge about
+      the system under study, as a delta against the living knowledge base
+      in openspec/specs/<capability-path>/spec.md.
+
+      TIMING: Unlike a normal spec, this is written POST-RESULTS, during the
+      results step — never up front. Record the DECISION / finding, never the
+      hypothesis. A finding you could not yet confirm does not belong here.
+
+      A refuted hypothesis is still a finding worth recording (e.g. "approach X
+      degrades OOD generalization — do not use it"). Only set skip_specs: true
+      when the experiment established nothing durable at all (pure tooling,
+      aborted run, no interpretable evidence).
+
+      Format — findings with linked evidence (validates and parses as OpenSpec
+      requirements/scenarios; use the finding name as the stable identity that
+      MODIFIED/REMOVED deltas match on):
+
+      Delta operations (## headers, exactly as written):
+      - **ADDED Requirements**: a newly established finding
+      - **MODIFIED Requirements**: an existing finding whose conclusion changed
+        (copy the ENTIRE existing block, then edit; header text must match)
+      - **REMOVED Requirements**: a finding a later experiment superseded
+        (include **Reason** and **Migration**)
+      - **RENAMED Requirements**: FROM:/TO: header rename only
+
+      Each finding:
+      - `### Requirement: Finding: <stable, decision-oriented name>` followed
+        by the established conclusion and the resulting design decision. State
+        it as a decision the system's design now follows. The literal
+        `Requirement:` prefix is required for the OpenSpec CLI to parse this
+        as a delta requirement (`openspec validate`); `Finding:` after it is
+        this schema's naming convention and part of the stable identity that
+        MODIFIED/REMOVED/RENAMED deltas match on (header text must match
+        exactly, including this prefix).
+      - At least one `#### Evidence: <experiment>` block in WHEN/THEN form:
+        - **WHEN** <what was tried, on which data/split> — link the archived
+          change (e.g. archive/2026-09-16-<change-name>)
+        - **THEN** <the measured outcome that established the finding>
+
+      New capabilities only: open the delta with a `## Purpose` section
+      (50+ chars) describing what body of knowledge the capability covers.
+      For an existing capability, do not add `## Purpose`.
+
+      Reference sections: a knowledge spec may also carry `## Code State`,
+      `## Datasets` and `## Evaluation Metrics Overview` sections (placed
+      BEFORE `## Requirements`). These are maintained by editing the main
+      spec in openspec/specs/ directly — NOT through requirement deltas.
+
+      `## Code State` describes what the capability's code currently does:
+      the relevant modules/functions (e.g. `masking/shared_mask.py`,
+      `training/trainer.py::build_trainer`) and how they fit together. It is
+      a plain factual description of the implementation as it stands, not a
+      finding derived from evidence — update it whenever the code changes,
+      not only when an experiment runs. Keep it current rather than
+      appending history to it; if code moves or is replaced, edit this
+      section in place rather than leaving stale references (findings below
+      keep the history, via their own Evidence links).
+
+      Every experiment appends its run to the metrics overview and registers
+      any new dataset/split it introduces (name, size, role,
+      in/out-of-distribution).
+    requires:
+      - evaluation
+
+apply:
+  requires:
+    - tasks
+
+  tracks: tasks.md
+
+  instruction: |
+    Execute the ML experiment according to the proposal,
+    design and evaluation plan.
+
+    Work through tasks.md and mark tasks complete.
+
+    Preserve reproducibility information such as:
+    - git commit
+    - configuration
+    - random seeds
+    - dataset/version
+    - model/checkpoint
+    - experiment tracking run IDs when available
+
+    After the experiment has run, create results.md.
+
+    In results.md clearly separate:
+    1. Results
+    2. Observations
+    3. Interpretation
+    4. Conclusion
+    5. Decision
+    6. Follow-up questions
+
+    Then distil the durable finding into the knowledge delta at
+    specs/<capability-path>/spec.md (the specs artifact), linking this
+    change as evidence — unless the change opted out via skip_specs: true.
+    The delta is synced into openspec/specs/ at archive time.
+
+    Never change the original hypothesis after seeing the results.
