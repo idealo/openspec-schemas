@@ -1,5 +1,30 @@
 # ml-research — OpenSpec community schema
 
+This repository adapts [OpenSpec](https://github.com/Fission-AI/OpenSpec), a
+spec-driven development framework, to machine-learning research. Hypothesis
+(the why), design (the how), evaluation plan (how we measure) and tasks (the
+what) are captured as Markdown before an experiment runs, so that humans and AI
+coding agents can plan, execute, document and iterate on experiments with a
+traceable research history. It is the practical foundation for the blog post
+*"AI assisted Research with OpenSpec: From Spec-Driven Development to
+Spec-Driven ML Research"*.
+
+## The Missing Layer in ML Experiment Tracking
+
+Tools like MLflow or Weights & Biases store metrics, models and datasets, but
+answering *why* an experiment was run and *what was learned* from it a year
+later is much harder. This schema adds that missing layer: a structured,
+traceable record of hypothesis, design, evaluation plan and decision for every
+experiment.
+
+## What's in this repo
+
+- [`openspec/schemas/ml-research/`](openspec/schemas/ml-research) — the schema
+  and its artifact templates
+- [`examples/`](examples) — a worked example of a full experiment lifecycle
+
+## Overview
+
 An [OpenSpec](https://github.com/Fission-AI/OpenSpec) workflow schema for
 iterative machine-learning research. It extends OpenSpec's default
 `proposal → design → tasks` flow with an **evaluation** artifact and a
@@ -55,14 +80,6 @@ Key rules enforced by the schema's instructions:
   decision, not the untested hypothesis.
 - Use `skip_specs: true` only when an experiment established nothing durable
   at all (pure tooling, aborted run, no interpretable evidence).
-
-## Worked example
-
-[`examples/`](examples/) contains a filled-out, fictional run through the
-whole lifecycle — proposal, design, evaluation, tasks, results, and the
-resulting spec entry — including a hypothesis that gets **rejected** by its
-own pre-registered falsification condition and is still recorded as a
-finding. See [`examples/README.md`](examples/README.md).
 
 ## Example `config.yaml` additions
 
