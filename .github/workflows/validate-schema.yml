@@ -1,0 +1,34 @@
+name: Validate schema
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install OpenSpec
+        run: npm install -g @fission-ai/openspec@latest
+
+      - name: Validate all schemas
+        run: |
+          status=0
+          for dir in openspec/schemas/*/; do
+            name=$(basename "$dir")
+            echo "::group::Validating $name"
+            openspec schema validate "$name" || status=1
+            echo "::endgroup::"
+          done
+          exit $status
