@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  validate:
+  schema-validation:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
