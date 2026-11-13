@@ -6,8 +6,8 @@ spec-driven development framework, to machine-learning research. Hypothesis
 what) are captured as Markdown before an experiment runs, so that humans and AI
 coding agents can plan, execute, document and iterate on experiments with a
 traceable research history. It is the practical foundation for the blog post
-*"AI assisted Research with OpenSpec: From Spec-Driven Development to
-Spec-Driven ML Research"*.
+[*"AI assisted Research with OpenSpec: From Spec-Driven Development to
+Spec-Driven ML Research"*](https://medium.com/idealo-tech-blog/ai-assisted-research-with-openspec-from-spec-driven-development-to-spec-driven-ml-research-dc76d505febf?sharedUserId=tsenst).
 
 ## The Missing Layer in ML Experiment Tracking
 
