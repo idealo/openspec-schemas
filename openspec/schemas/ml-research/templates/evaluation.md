@@ -28,6 +28,8 @@ without >5% inference overhead.
 
 ## Hypothesis Supported If
 
+<!-- Only if the proposal has a hypothesis; else delete these two sections. -->
+
 ## Hypothesis Rejected If
 
 ## Required Analysis

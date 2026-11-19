@@ -1,8 +1,11 @@
 # Experiment Proposal
 
-## Research Question
+**Name:** <!-- descriptive name or self-explanatory name, e. g. "bert model fine-tuned" (+ acronym) -->
+**Typ:** <!-- experiment | dataset | change -->
 
-<!-- What question are we trying to answer? -->
+## Research Question / Goal
+
+<!-- What question are we trying to answer (or, for dataset/tooling changes: what is the goal)? -->
 
 ## Previous Findings
 
@@ -19,7 +22,8 @@ Example:
 ## Hypothesis
 
 <!--
-State one falsifiable hypothesis.
+Always ask the user. One falsifiable hypothesis - or "no hypothesis (<reason>)"
+for dataset/exploratory/tooling changes. Never invent one.
 -->
 
 ## Proposed Variant
