@@ -20,7 +20,7 @@ jobs:
           node-version: "24"
 
       - name: Install OpenSpec
-        run: npm install -g @fission-ai/openspec@latest
+        run: npm install -g --ignore-scripts @fission-ai/openspec@latest
 
       - name: Validate all schemas
         run: |
