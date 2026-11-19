@@ -1,5 +1,5 @@
 name: ml-research
-version: 1
+version: 2
 description: >
   Iterative machine-learning experiment workflow that connects
   previous findings, hypotheses, implementation variants,
