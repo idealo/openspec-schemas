@@ -1,7 +1,7 @@
 # Experiment Proposal
 
-**Name:** <!-- descriptive name or self-explanatory name, e. g. "bert model fine-tuned" (+ acronym) -->
-**Typ:** <!-- experiment | dataset | change -->
+**Name:** <!-- descriptive name + acronym, e.g. "BERT fine-tuned (BERT-FT)" -->
+**Type:** <!-- experiment | dataset | change -->
 
 ## Research Question / Goal
 
@@ -22,7 +22,7 @@ Example:
 ## Hypothesis
 
 <!--
-Always ask the user. One falsifiable hypothesis - or "no hypothesis (<reason>)"
+Always ask the user. One falsifiable hypothesis - or "No hypothesis (<reason>)"
 for dataset/exploratory/tooling changes. Never invent one.
 -->
 
@@ -35,7 +35,7 @@ What are we changing compared with the current baseline?
 ## Expected Outcome
 
 <!--
-What result would support the hypothesis?
+What result would support the hypothesis (or answer the question / reach the goal)?
 -->
 
 ## Why This Experiment Now

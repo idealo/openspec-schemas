@@ -58,6 +58,8 @@ directly to this repository.
    - `schema.yaml` and the matching file in `templates/`
    - the workflow table and rules in the [README](README.md)
    - the worked example in `examples/`, if the artifact structure changes
+   - `version:` in `schema.yaml` and an entry in [`CHANGELOG.md`](CHANGELOG.md),
+     if the change alters the artifact structure or the agent's behavior
 4. Validate the schema:
 
    ```bash

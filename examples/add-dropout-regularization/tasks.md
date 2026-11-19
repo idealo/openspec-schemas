@@ -20,6 +20,8 @@
 
 - [x] Compute val accuracy and train/val gap per run; aggregate mean ± std
       per configuration: `python evaluate.py --run-glob "runs/add-dropout-regularization/*"`.
+- [x] Compute test micro/macro precision, recall and F1 per configuration
+      (mean over seeds) for the spec's standard table.
 - [x] Compute short/long review slice accuracy for both configurations.
 - [x] Check success criteria from `evaluation.md` against the aggregated
       numbers.
@@ -37,3 +39,5 @@
       `openspec/specs/model-training/spec.md` (this change does not qualify
       for `skip_specs: true` — a dropout decision is durable, even though the
       hypothesis was rejected).
+- [x] Add the HD-0.3 row (and the re-run BERT-B baseline row) to `## Experiments`
+      and to the standard table in `## Evaluation Metrics Overview`.

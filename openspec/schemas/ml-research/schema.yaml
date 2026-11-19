@@ -17,19 +17,19 @@ artifacts:
       Describe WHY this change is being performed.
 
       FIRST determine the change type and record it in the proposal
-      (`Typ:`): `experiment` (model/method variant evaluated against a
+      (`Type:`): `experiment` (model/method variant evaluated against a
       baseline), `dataset` (creation/resampling/analysis of a dataset) or
       `change` (tooling, code, spec maintenance).
 
       ALWAYS ASK the user whether there is a hypothesis (AskUserQuestion)
       before writing the proposal — never invent one. A hypothesis is
       optional: if the user has none (typical for dataset, exploratory or
-      tooling changes), write "No Hypothesis (<reason>)" in the Hypothesis
+      tooling changes), write "No hypothesis (<reason>)" in the Hypothesis
       section and a Research Question / Goal instead. Do not present a
       guessed hypothesis as the user's.
 
-      Give the change a speaking name (`Name:`, e.g. "BertModels
-      fine-tuned") in addition to any abbreviation; use it everywhere.
+      Give the change a descriptive name (`Name:`, e.g. "BERT fine-tuned")
+      plus an acronym (e.g. "BERT-FT"); use both consistently everywhere.
 
       If needed connect the experiment to findings from previous
       experiments or archived OpenSpec changes whenever they exist.
@@ -80,8 +80,8 @@ artifacts:
       Include:
       - primary metric
       - secondary metrics (always micro AND macro precision/recall/F1, so the
-        run can be added to the spec's Standard-Table)
-      - evaluation setting (split, category source, scoring variant, threshold
+        run can be added to the spec's standard table)
+      - evaluation setting (split, label source, scoring variant, threshold
         selection) — fixed so all variants are comparable to earlier rows
       - baseline comparison
       - important slices or subgroups
@@ -106,8 +106,8 @@ artifacts:
       Implementation, training, evaluation and documentation checklist.
     template: tasks.md
     instruction: |
-      Turn the experiment design into concrete executable tasks. List the python script calles
-      that are used to run the experiments and the different runs with all parameters included
+      Turn the experiment design into concrete executable tasks. List the Python script calls
+      that are used to run the experiments and the different runs with all parameters included.
 
       The tasks must cover:
       1. implementation
@@ -158,18 +158,19 @@ artifacts:
 
       - `## Purpose` (new capabilities only, 50+ chars)
       - `## Code State` — what the code does now; keep current, edit in place.
-      - `## Datasets` — ONLY in the `attribute-recognition-dataset` spec
-        (single source). Other specs link to it instead of repeating it.
+      - `## Datasets` — ONLY in one dedicated dataset spec (e.g.
+        `<project>-dataset`, single source). Other specs link to it instead
+        of repeating it.
         EVERY dataset/split the experiments rely on: name, size, role,
         in/out-of-distribution, **how it was generated** (script/sampling
         procedure, link to archived change), **statistics** (counts,
         distributions, coverage) and **what it implies** (what it can and
         cannot tell). Dataset changes always update this section.
-      - `## Experimente` — registry, one row per experiment/variant:
-        `Acronym | Descriptive Name | Typ | Hypothesis (oder "None") |
-        Result (1 Sentence) | Change (Link)`. Every experiment and model has
-        BOTH an abbreviation and a speaking name; use the speaking name in
-        prose and tables (e.g. "Bertmodel fine-tuned (G-FT)").
+      - `## Experiments` — registry, one row per experiment/variant:
+        `Acronym | Descriptive Name | Type | Hypothesis (or "none") |
+        Result (1 sentence) | Change (link)`. Every experiment and model has
+        BOTH an acronym and a descriptive name; use the descriptive name in
+        prose and tables (e.g. "BERT fine-tuned (BERT-FT)").
         Changes without hypothesis (dataset/tooling) are listed too.
       - `## Evaluation Metrics Overview` — see below.
 
@@ -192,7 +193,7 @@ artifacts:
         required by `openspec validate`.
       - ONE sentence with the resulting decision, containing MUST/SHALL
         (required by the parser).
-      - One `#### Evidence: <sprechender Name>` block per supporting change:
+      - One `#### Evidence: <descriptive name>` block per supporting change:
         - **WHEN** <what was tried, on which data/split, one line>
         - **THEN** <key number(s) that established it, one line> —
           [<change>](../../changes/archive/<date>-<change>/results.md)
@@ -202,18 +203,18 @@ artifacts:
       (skip_specs: true). Dataset changes still update `## Datasets`.
 
       `## Evaluation Metrics Overview` has two parts:
-      1. **Standard-Tables (mandatory)** — one row per evaluated variant
+      1. **Standard table (mandatory)** — one row per evaluated variant
          (baselines and controls included) with the fixed columns
-         `Experiment | Variante | Setting | Scoring | Micro P | Micro R |
+         `Experiment | Variant | Setting | Scoring | Micro P | Micro R |
          Micro F1 | Macro P | Macro R | Macro F1 | Evidence`. `Variant`
          is written `<acronym> – <descriptive name>`. All variants are
          scored on the same split (test) so rows are comparable. Micro =
-         aggregated over all (key, value) pairs; Macro = mean of per-key
-         values over keys with >=1 ground-truth occurrence (undefined = 0).
+         aggregated over all labels/classes; Macro = mean of per-class
+         values over classes with >=1 ground-truth occurrence (undefined = 0).
          Include ALL runs of ALL experiments (also failed/negative ones).
          Multi-seed runs: mean over seeds. Never omit a column; if a metric
          could not be computed, say why in the row instead of leaving it out.
-      2. **Following Metrics** — free-form `Run | Metric | Value | Evidence`
+      2. **Additional metrics** — free-form `Run | Metric | Value | Evidence`
          rows for experiment-specific numbers (deltas, CIs, ablations, cost).
     requires:
       - evaluation
@@ -243,7 +244,7 @@ apply:
 
     In results.md clearly separate:
     1. Results (starting with a table of micro/macro precision, recall and F1
-       per variant, same columns as the spec's Standard-Tables)
+       per variant, same columns as the spec's standard table)
     2. Observations
     3. Interpretation
     4. Conclusion

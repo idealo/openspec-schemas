@@ -7,7 +7,17 @@ Validation accuracy (mean over 3 seeds).
 ## Secondary Metrics
 
 - Train/val accuracy gap (mean over 3 seeds).
-- Validation macro-F1 (sanity check against class imbalance effects).
+- Test micro and macro precision/recall/F1 (mean over 3 seeds) for the
+  spec's standard table. Macro-F1 also serves as a sanity check against
+  class imbalance effects.
+
+## Evaluation Setting
+
+- Model selection and success criteria: validation split.
+- Standard-table metrics: test split of `reviews-sentiment-v2`, the same
+  split as every earlier row in the spec.
+- Labels: gold sentiment labels shipped with the dataset.
+- Scoring: argmax over the two classes, no threshold tuning.
 
 ## Baseline Comparison
 
