@@ -16,7 +16,7 @@
 ## Evaluation
 
 - [ ] Calculate primary metric
-- [ ] Calculate secondary metrics
+- [ ] Calculate secondary metrics (micro/macro precision, recall, F1)
 - [ ] Run required slice analysis
 - [ ] Run required ablations
 
@@ -29,3 +29,4 @@
 - [ ] State whether hypothesis was supported
 - [ ] Record decision
 - [ ] Record possible follow-up experiments
+- [ ] Update the spec: finding (Requirements), Experiments row, Evaluation Metrics Overview (and Datasets for dataset changes)

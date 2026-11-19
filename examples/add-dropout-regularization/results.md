@@ -2,6 +2,18 @@
 
 ## 1. Results
 
+### Standard metrics (test split, mean over seeds 17/23/41)
+
+For single-label binary classification, micro P = micro R = micro F1 =
+accuracy.
+
+| Variant | Micro P | Micro R | Micro F1 | Macro P | Macro R | Macro F1 |
+|---|---|---|---|---|---|---|
+| BERT-B – BERT-base classifier (dropout 0.1) | 0.858 | 0.858 | 0.858 | 0.856 | 0.852 | 0.854 |
+| HD-0.3 – Head dropout 0.3 | 0.845 | 0.845 | 0.845 | 0.843 | 0.836 | 0.839 |
+
+### Validation accuracy and train/val gap (per seed)
+
 | Config | Seed | Val Accuracy | Train Accuracy | Train/Val Gap |
 |---|---|---|---|---|
 | baseline (dropout 0.1) | 17 | 0.863 | 0.941 | 7.8pp |

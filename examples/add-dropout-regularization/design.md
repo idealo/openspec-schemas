@@ -2,14 +2,14 @@
 
 ## Baseline
 
-`bert-base-uncased` encoder, mean-pooled, single linear classification head,
+BERT-base classifier (BERT-B): `bert-base-uncased` encoder, mean-pooled, single linear classification head,
 head dropout `0.1`. Trained for 5 epochs, batch size 32, lr `2e-5`, AdamW,
 linear warmup 10%. Dataset: `reviews-sentiment-v2` (train 48,213 / val 6,027
 / test 6,031).
 
 ## Experimental Variant
 
-Identical setup; head dropout changed from `0.1` to `0.3`.
+Head dropout 0.3 (HD-0.3): identical setup; head dropout changed from `0.1` to `0.3`.
 
 ## Changed Variables
 

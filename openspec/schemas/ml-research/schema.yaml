@@ -1,5 +1,5 @@
 name: ml-research
-version: 1
+version: 2
 description: >
   Iterative machine-learning experiment workflow that connects
   previous findings, hypotheses, implementation variants,
@@ -14,14 +14,29 @@ artifacts:
       the ML variant that should be investigated.
     template: proposal.md
     instruction: |
-      Describe WHY this experiment is being performed.
+      Describe WHY this change is being performed.
+
+      FIRST determine the change type and record it in the proposal
+      (`Type:`): `experiment` (model/method variant evaluated against a
+      baseline), `dataset` (creation/resampling/analysis of a dataset) or
+      `change` (tooling, code, spec maintenance).
+
+      ALWAYS ASK the user whether there is a hypothesis (AskUserQuestion)
+      before writing the proposal — never invent one. A hypothesis is
+      optional: if the user has none (typical for dataset, exploratory or
+      tooling changes), write "No hypothesis (<reason>)" in the Hypothesis
+      section and a Research Question / Goal instead. Do not present a
+      guessed hypothesis as the user's.
+
+      Give the change a descriptive name (`Name:`, e.g. "BERT fine-tuned")
+      plus an acronym (e.g. "BERT-FT"); use both consistently everywhere.
 
       If needed connect the experiment to findings from previous
       experiments or archived OpenSpec changes whenever they exist.
 
       Clearly distinguish:
       - previous evidence
-      - hypothesis
+      - hypothesis (only if one exists)
       - proposed change
       - expected outcome
 
@@ -64,12 +79,20 @@ artifacts:
 
       Include:
       - primary metric
-      - secondary metrics
+      - secondary metrics (always micro AND macro precision/recall/F1, so the
+        run can be added to the spec's standard table)
+      - evaluation setting (split, label source, scoring variant, threshold
+        selection) — fixed so all variants are comparable to earlier rows
       - baseline comparison
       - important slices or subgroups
       - required ablations
       - success criteria
-      - conditions that would falsify the hypothesis
+      - conditions that would falsify the hypothesis (only if the proposal
+        has a hypothesis; otherwise state what question the numbers answer)
+
+      For `dataset` changes: the evaluation is the dataset statistics and
+      quality checks (size, coverage, distributions, leakage) instead of
+      model metrics.
 
       The evaluation should make it possible to distinguish
       improvement from noise or unrelated implementation changes.
@@ -83,8 +106,8 @@ artifacts:
       Implementation, training, evaluation and documentation checklist.
     template: tasks.md
     instruction: |
-      Turn the experiment design into concrete executable tasks. List the python script calles
-      that are used to run the experiments and the different runs with all parameters included
+      Turn the experiment design into concrete executable tasks. List the Python script calls
+      that are used to run the experiments and the different runs with all parameters included.
 
       The tasks must cover:
       1. implementation
@@ -129,9 +152,31 @@ artifacts:
       when the experiment established nothing durable at all (pure tooling,
       aborted run, no interpretable evidence).
 
-      Format — findings with linked evidence (validates and parses as OpenSpec
-      requirements/scenarios; use the finding name as the stable identity that
-      MODIFIED/REMOVED deltas match on):
+      The spec is a SUMMARY of all experiments and datasets of the
+      capability. Its sections (placed BEFORE `## Requirements`, edited in
+      openspec/specs/ directly, NOT via deltas):
+
+      - `## Purpose` (new capabilities only, 50+ chars)
+      - `## Code State` — what the code does now; keep current, edit in place.
+      - `## Datasets` — ONLY in one dedicated dataset spec (e.g.
+        `<project>-dataset`, single source). Other specs link to it instead
+        of repeating it.
+        EVERY dataset/split the experiments rely on: name, size, role,
+        in/out-of-distribution, **how it was generated** (script/sampling
+        procedure, link to archived change), **statistics** (counts,
+        distributions, coverage) and **what it implies** (what it can and
+        cannot tell). Dataset changes always update this section.
+      - `## Experiments` — registry, one row per experiment/variant:
+        `Acronym | Descriptive Name | Type | Hypothesis (or "none") |
+        Result (1 sentence) | Change (link)`. Every experiment and model has
+        BOTH an acronym and a descriptive name; use the descriptive name in
+        prose and tables (e.g. "BERT fine-tuned (BERT-FT)").
+        Changes without hypothesis (dataset/tooling) are listed too.
+      - `## Evaluation Metrics Overview` — see below.
+
+      `## Requirements` IS the findings list — no separate findings section.
+      Each finding is short; details (numbers, ablations, discussion) stay
+      in the archived change's results.md, which the finding links to.
 
       Delta operations (## headers, exactly as written):
       - **ADDED Requirements**: a newly established finding
@@ -141,42 +186,36 @@ artifacts:
         (include **Reason** and **Migration**)
       - **RENAMED Requirements**: FROM:/TO: header rename only
 
-      Each finding:
-      - `### Requirement: Finding: <stable, decision-oriented name>` followed
-        by the established conclusion and the resulting design decision. State
-        it as a decision the system's design now follows. The literal
-        `Requirement:` prefix is required for the OpenSpec CLI to parse this
-        as a delta requirement (`openspec validate`); `Finding:` after it is
-        this schema's naming convention and part of the stable identity that
-        MODIFIED/REMOVED/RENAMED deltas match on (header text must match
-        exactly, including this prefix).
-      - At least one `#### Evidence: <experiment>` block in WHEN/THEN form:
-        - **WHEN** <what was tried, on which data/split> — link the archived
-          change (e.g. archive/2026-09-16-<change-name>)
-        - **THEN** <the measured outcome that established the finding>
+      Each finding (keep it under ~500 characters in total):
+      - `### Requirement: Finding: <the finding as a short statement>` — the
+        header itself is the finding and the stable identity that
+        MODIFIED/REMOVED/RENAMED match on. The `Requirement:` prefix is
+        required by `openspec validate`.
+      - ONE sentence with the resulting decision, containing MUST/SHALL
+        (required by the parser).
+      - One `#### Evidence: <descriptive name>` block per supporting change:
+        - **WHEN** <what was tried, on which data/split, one line>
+        - **THEN** <key number(s) that established it, one line> —
+          [<change>](../../changes/archive/<date>-<change>/results.md)
+      - Also add/update the change's row in `## Experiments`.
 
-      New capabilities only: open the delta with a `## Purpose` section
-      (50+ chars) describing what body of knowledge the capability covers.
-      For an existing capability, do not add `## Purpose`.
+      Skip the finding only for changes that establish nothing durable
+      (skip_specs: true). Dataset changes still update `## Datasets`.
 
-      Reference sections: a knowledge spec may also carry `## Code State`,
-      `## Datasets` and `## Evaluation Metrics Overview` sections (placed
-      BEFORE `## Requirements`). These are maintained by editing the main
-      spec in openspec/specs/ directly — NOT through requirement deltas.
-
-      `## Code State` describes what the capability's code currently does:
-      the relevant modules/functions (e.g. `masking/shared_mask.py`,
-      `training/trainer.py::build_trainer`) and how they fit together. It is
-      a plain factual description of the implementation as it stands, not a
-      finding derived from evidence — update it whenever the code changes,
-      not only when an experiment runs. Keep it current rather than
-      appending history to it; if code moves or is replaced, edit this
-      section in place rather than leaving stale references (findings below
-      keep the history, via their own Evidence links).
-
-      Every experiment appends its run to the metrics overview and registers
-      any new dataset/split it introduces (name, size, role,
-      in/out-of-distribution).
+      `## Evaluation Metrics Overview` has two parts:
+      1. **Standard table (mandatory)** — one row per evaluated variant
+         (baselines and controls included) with the fixed columns
+         `Experiment | Variant | Setting | Scoring | Micro P | Micro R |
+         Micro F1 | Macro P | Macro R | Macro F1 | Evidence`. `Variant`
+         is written `<acronym> – <descriptive name>`. All variants are
+         scored on the same split (test) so rows are comparable. Micro =
+         aggregated over all labels/classes; Macro = mean of per-class
+         values over classes with >=1 ground-truth occurrence (undefined = 0).
+         Include ALL runs of ALL experiments (also failed/negative ones).
+         Multi-seed runs: mean over seeds. Never omit a column; if a metric
+         could not be computed, say why in the row instead of leaving it out.
+      2. **Additional metrics** — free-form `Run | Metric | Value | Evidence`
+         rows for experiment-specific numbers (deltas, CIs, ablations, cost).
     requires:
       - evaluation
 
@@ -200,10 +239,12 @@ apply:
     - model/checkpoint
     - experiment tracking run IDs when available
 
-    After the experiment has run, create results.md.
+    After the experiment has run, create results.md. For dataset changes,
+    results.md reports the dataset statistics instead of model metrics.
 
     In results.md clearly separate:
-    1. Results
+    1. Results (starting with a table of micro/macro precision, recall and F1
+       per variant, same columns as the spec's standard table)
     2. Observations
     3. Interpretation
     4. Conclusion
@@ -215,4 +256,5 @@ apply:
     change as evidence — unless the change opted out via skip_specs: true.
     The delta is synced into openspec/specs/ at archive time.
 
-    Never change the original hypothesis after seeing the results.
+    Never change the original hypothesis after seeing the results
+    (if the change has no hypothesis, say so in the Conclusion).

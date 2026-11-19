@@ -1,6 +1,9 @@
 # Experiment Proposal
 
-## Research Question
+**Name:** Head dropout 0.3 (HD-0.3)
+**Type:** experiment
+
+## Research Question / Goal
 
 Does increasing classification-head dropout reduce overfitting on our text
 classifier without a meaningful loss in validation accuracy?
@@ -8,7 +11,7 @@ classifier without a meaningful loss in validation accuracy?
 ## Previous Findings
 
 - `archive/2026-01-03-bert-base-text-classifier` established the current
-  baseline: `bert-base-uncased` + linear head, dropout `0.1`, val accuracy
+  baseline, BERT-base classifier (BERT-B): `bert-base-uncased` + linear head, dropout `0.1`, val accuracy
   `0.861`, train accuracy `0.942` (gap `8.1pp`).
 - The gap was flagged as an open question in that change's follow-ups:
   "train/val gap is large relative to dataset size; worth testing standard

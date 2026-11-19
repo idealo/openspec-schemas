@@ -4,6 +4,12 @@
 
 ## Secondary Metrics
 
+<!-- Always include micro AND macro precision/recall/F1 (spec standard table). -->
+
+## Evaluation Setting
+
+<!-- Split, label source, scoring variant, threshold selection - fixed so rows stay comparable. For dataset changes: statistics and quality checks instead of model metrics. -->
+
 ## Baseline Comparison
 
 ## Relevant Slices
@@ -27,6 +33,8 @@ without >5% inference overhead.
 -->
 
 ## Hypothesis Supported If
+
+<!-- Only if the proposal has a hypothesis; else delete these two sections. -->
 
 ## Hypothesis Rejected If
 
